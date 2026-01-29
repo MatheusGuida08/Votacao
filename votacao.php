@@ -48,39 +48,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
 <form method="post">
-    <h2> Sistema de Votação</h2>
-
-  <!-- Campo para digitar o CPF -->
-<input type="number" name="cpf" placeholder="XXX.XXX.XXX-XX" maxlength="11" pattern="\d{3}[\.]?\d{3}[\.]?\d{3}[-]?\d{2}" required>
-
-    <select name="candidato">
-        <option value="">Escolha o candidato</option>
+        <h2>Sistema de Votação</h2>
+ 
+        <!-- Campo para digitar o CPF -->
+        <input type="text" name="cpf" placeholder="XXX.XXX.XXX-XX" pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}" required>
+ 
+        <select name="candidato" required>
+            <option value="">Escolha o candidato</option>
+            <?php
+            if (file_exists($arquivoCandidatos)) {
+                $linhas = file($arquivoCandidatos, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+ 
+                foreach ($linhas as $linha) {
+                    list($id, $nome) = explode('|', $linha);
+                    echo "<option value='$id'>$nome</option>";
+                }
+            }
+            ?>
+        </select>
+ 
+        <button type="submit">VOTAR</button>
+ 
         <?php
-        if (file_exists($arquivoCandidatos)) {
-            $linhas = file($arquivoCandidatos, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-            foreach ($linhas as $linha) {
-                list($id, $nome) = explode('|', $linha);
-                echo "<option value='$id'>$nome</option>";
+        if ($mensagem) {
+            if ($mensagem === "sucesso") {
+                echo "<p style='color: green;'>$mensagem</p>";
+            } else {
+                echo "<p style='color: red;'>$mensagem</p>";
             }
         }
         ?>
-    </select>
-
-    <button type="submit">VOTAR</button>
-
-    <?php
-    if ($mensagem) {
-        $classe = ($mensagem == "Voto registrado com sucesso!") ? "sucesso" : "erro";
-        echo "<p class='$classe'>$mensagem</p>";
-    }
-    ?>
-    <a href="index.php">
-    <button type="button" class="inicio"> <strong>HOME</strong></button>
-    </a>
-
-
-</form>
+ 
+        <a href="index.php">
+            <button type="button">
+                <strong>HOME</strong>
+            </button>
+        </a>
+    </form>
 
 </body>
 </html>
