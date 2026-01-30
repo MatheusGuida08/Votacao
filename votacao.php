@@ -2,38 +2,38 @@
 $arquivoCandidatos = 'dados/dados.txt';
 $arquivoVotos = 'dados/votos.txt';
 $mensagem = "";
-
+ 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+ 
     $cpf = $_POST['cpf'];
     $idCandidato = $_POST['candidato'];
-
+ 
     if (empty($cpf) || empty($idCandidato)) {
         $mensagem = "Preencha todos os campos.";
     } else {
-
+ 
         // Verifica se o CPF do eleitor já votou
         if (file_exists($arquivoVotos)) {
             $votos = file($arquivoVotos, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
+ 
             foreach ($votos as $voto) {
                 list($cpfEleitor,) = explode('|', $voto);
-
+ 
                 if (strcasecmp($cpfEleitor, $cpf) === 0) {
                     $mensagem = "Você já votou!";
                     $mensagem = "<span style='color: red;'>Você já votou!</span>";
-
+ 
                     break;
                 }
             }
         }
-
+ 
         // Se ainda não votou, grava o voto
         if (empty($mensagem)) {
             $linha = $cpf . "|" . $idCandidato . PHP_EOL;
             file_put_contents($arquivoVotos, $linha, FILE_APPEND | LOCK_EX);
             $mensagem = "<span style='color: green;'>Voto registrado com sucesso!</span>";
-
+ 
         }
     }
 }
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  <link rel="stylesheet" href="Estilizacao/style2.css">
 </head>
 <body>
-
+ 
 <form method="post">
         <h2>Sistema de Votação</h2>
  
@@ -67,8 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ?>
         </select>
  
-        <button type="submit">VOTAR</button>
- 
+     
         <?php
         if ($mensagem) {
             if ($mensagem === "sucesso") {
@@ -79,12 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         ?>
  
-        <a href="index.php">
-            <button type="button">
-                <strong>HOME</strong>
-            </button>
-        </a>
+ 
+     <button type="submit"> <strong>SALVAR </strong></button>
+   
+    <a href="index.php">
+    <button type="button" class="inicio"> <strong>HOME</strong></button>
+    </a>
+ 
     </form>
-
+ 
 </body>
 </html>
